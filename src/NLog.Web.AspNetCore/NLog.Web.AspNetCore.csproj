@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <TargetFrameworks>netstandard1.5;net451;net461;netstandard2.0;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.0</TargetFrameworks>
+    <!--<TargetFrameworks>netstandard1.5;net451;net461;netstandard2.0;netstandard2.1;netcoreapp3.0</TargetFrameworks>-->
     <Product>NLog.Web.AspNetCore v$(VersionPrefix)</Product>
     <Description>
 NLog LoggerProvider for Microsoft.Extensions.Logging and ASP.NET Core platform. Adds helpers and layout renderers for websites and web applications.
@@ -59,9 +60,16 @@ See also https://github.com/NLog/NLog.Web/releases
     <Title>ASP.NET Core 2 integration for NLog - .NET Standard 2</Title>
     <DefineConstants>$(DefineConstants);ASP_NET_CORE;ASP_NET_CORE2</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+    <Title>ASP.NET Core 3 integration for NLog - .NET Standard 2</Title>
+    <DefineConstants>$(DefineConstants);ASP_NET_CORE;ASP_NET_CORE3;NET_STANDARD_21</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
     <Title>ASP.NET Core 3 integration for NLog - .NET Core 3</Title>
     <DefineConstants>$(DefineConstants);ASP_NET_CORE;ASP_NET_CORE3</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <NoWarn>1701;1702;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.4" />
@@ -80,6 +88,18 @@ See also https://github.com/NLog/NLog.Web/releases
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.1.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1'">
+    <!-- Fixed to 2.1.0 as 2.1 is Long Term Supported (LTS) and works with vanilla .NET Core 2.1 SDK -->
+    <!--<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />-->
+    <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.6" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />-->
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
+    
+
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

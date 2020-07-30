@@ -30,13 +30,18 @@ namespace NLog.Web.LayoutRenderers
 #if ASP_NET_CORE3
         private string LookupTraceIdentifier(HttpContext httpContext)
         {
+#if !NET_STANDARD_21
             if (IgnoreActivityId)
                 return httpContext.TraceIdentifier;
             else
                 return System.Diagnostics.Activity.Current?.Id ?? httpContext.TraceIdentifier;
+#else
+            return httpContext.TraceIdentifier;
+#endif
+
         }
 #elif ASP_NET_CORE
-        private string LookupTraceIdentifier(HttpContext httpContext)
+            private string LookupTraceIdentifier(HttpContext httpContext)
         {
             return httpContext.TraceIdentifier;
         }

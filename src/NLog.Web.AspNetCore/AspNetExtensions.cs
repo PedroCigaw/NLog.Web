@@ -232,11 +232,13 @@ namespace NLog.Web
 
             services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, NLogLoggerProvider>(serviceProvider => factory(serviceProvider, configuration, options)));
 
+#if ASP_NET_CORE2
             //note: this one is called before  services.AddSingleton<ILoggerFactory>
             if ((options ?? NLogAspNetCoreOptions.Default).RegisterHttpContextAccessor)
             {
                 services.AddHttpContextAccessor();
             }
+#endif
         }
 
         private static NLogLoggerProvider CreateNLogLoggerProvider(IServiceProvider serviceProvider, IConfiguration configuration, NLogAspNetCoreOptions options)
@@ -266,5 +268,5 @@ namespace NLog.Web
             return configuration;
         }
 #endif
+        }
     }
-}

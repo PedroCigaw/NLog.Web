@@ -97,11 +97,13 @@ namespace NLog.Web.LayoutRenderers
                 return;
 
 #if !ASP_NET_CORE
-            var value = PropertyReader.GetValue(Variable, contextSession, (session,key) => session.Count > 0 ? session[key] : null, EvaluateAsNestedProperties);
+            var value =
+ PropertyReader.GetValue(Variable, contextSession, (session,key) => session.Count > 0 ? session[key] : null, EvaluateAsNestedProperties);
 #else
             //because session.get / session.getstring also creating log messages in some cases, this could lead to stackoverflow issues. 
             //We remember on the context.Items that we are looking up a session value so we prevent stackoverflows
-            if (context.Items == null || (context.Items.Count > 0 && context.Items.ContainsKey(NLogRetrievingSessionValue)))
+            if (context.Items == null ||
+                (context.Items.Count > 0 && context.Items.ContainsKey(NLogRetrievingSessionValue)))
             {
                 return;
             }
@@ -111,7 +113,8 @@ namespace NLog.Web.LayoutRenderers
             object value;
             try
             {
-                value = PropertyReader.GetValue(Variable, contextSession, (session, key) => GetSessionValue(session, key), EvaluateAsNestedProperties);
+                value = PropertyReader.GetValue(Variable, contextSession,
+                    (session, key) => GetSessionValue(session, key), EvaluateAsNestedProperties);
             }
             finally
             {
@@ -128,12 +131,23 @@ namespace NLog.Web.LayoutRenderers
 #if ASP_NET_CORE
         private object GetSessionValue(ISession session, string key)
         {
+#if !NET_STANDARD_21
             switch (ValueType)
             {
                 case SessionValueType.Int32:
                     return session.GetInt32(key);
-                default: return session.GetString(key);
+                default: 
+                    return session.GetString(key);
             }
+#else
+            switch (ValueType)
+            {
+                case SessionValueType.Int32:
+                    return 0;
+                default:
+                    return string.Empty;
+            }
+#endif
         }
 #endif
     }

@@ -173,7 +173,7 @@ namespace NLog.Web.LayoutRenderers
 
         private static Stream EnableRewind(HttpRequest httpRequest, int bufferThreshold)
         {
-#if ASP_NET_CORE2 || ASP_NET_CORE3
+#if (ASP_NET_CORE2 || ASP_NET_CORE3) && !NET_STANDARD_21
             Microsoft.AspNetCore.Http.HttpRequestRewindExtensions.EnableBuffering(httpRequest, bufferThreshold);
             return httpRequest.Body;
 #elif ASP_NET_CORE1

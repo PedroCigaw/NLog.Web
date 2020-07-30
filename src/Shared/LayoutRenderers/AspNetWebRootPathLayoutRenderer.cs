@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Text;
+#if NET_STANDARD_21
+using Microsoft.Extensions.Hosting.Internal;
+#endif
 using NLog.Config;
 using NLog.LayoutRenderers;
 #if ASP_NET_CORE
@@ -29,12 +32,15 @@ namespace NLog.Web.LayoutRenderers
     [ThreadSafe]
     public class AspNetWebRootPathLayoutRenderer : LayoutRenderer
     {
-#if ASP_NET_CORE
+#if ASP_NET_CORE && !NET_STANDARD_21
         private static IWebHostEnvironment _webHostEnvironment;
 
         private static IWebHostEnvironment WebHostEnvironment => _webHostEnvironment ?? (_webHostEnvironment = ServiceLocator.ServiceProvider?.GetService<IWebHostEnvironment>());
 
         private string WebRootPath => WebHostEnvironment?.WebRootPath;
+#elif NET_STANDARD_21
+        private string WebRootPath => _webRootPath ?? (_webRootPath = new HostingEnvironment().ContentRootPath);
+        private static string _webRootPath;
 #else
         private string WebRootPath => _webRootPath ?? (_webRootPath = HostingEnvironment.MapPath("/"));
         private static string _webRootPath;
@@ -53,8 +59,10 @@ namespace NLog.Web.LayoutRenderers
         /// <inheritdoc />
         protected override void CloseLayoutRenderer()
         {
-#if ASP_NET_CORE
+#if ASP_NET_CORE && !NET_STANDARD_21
             _webHostEnvironment = null;
+#elif NET_STANDARD_21
+            _webRootPath = null;
 #else
             _webRootPath = null;
 #endif

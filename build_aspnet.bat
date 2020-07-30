@@ -1,17 +1,17 @@
 @echo off
 
 rem fallback if not passed
-set version_prefix=1.0.0
+set version_prefix=4.9.2.1
 set version_suffix=
 set version_build=%version_prefix%
 
-call :read_params %*
+rem call :read_params %*
 
-msbuild NLog.Web.sln /t:restore,rebuild /p:configuration=release /verbosity:minimal
-IF ERRORLEVEL 1 EXIT /B 1
+rem msbuild NLog.Web.sln /t:restore,rebuild /p:configuration=release /verbosity:minimal
+rem IF ERRORLEVEL 1 EXIT /B 1
 
-msbuild src\NLog.Web /t:rebuild,pack /p:configuration=release /verbosity:minimal /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:VersionPrefix=%version_prefix% /p:FileVersion=%version_build% /p:VersionSuffix=%version_suffix%
-IF ERRORLEVEL 1 EXIT /B 1
+rem msbuild src\NLog.Web /t:rebuild,pack /p:configuration=release /verbosity:minimal /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:VersionPrefix=%version_prefix% /p:FileVersion=%version_build% /p:VersionSuffix=%version_suffix%
+rem IF ERRORLEVEL 1 EXIT /B 1
 
 msbuild src\NLog.Web.AspNetCore /t:rebuild,pack /p:configuration=release /verbosity:minimal /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:VersionPrefix=%version_prefix% /p:FileVersion=%version_build% /p:VersionSuffix=%version_suffix%
 IF ERRORLEVEL 1 EXIT /B 1

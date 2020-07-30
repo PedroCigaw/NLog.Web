@@ -14,7 +14,7 @@ namespace NLog.Web
     /// </summary>
     public static class SetupBuilderExtensions
     {
-#if !ASP_NET_CORE1 && !ASP_NET_CORE2
+#if !ASP_NET_CORE1 && !ASP_NET_CORE2 && !NET_STANDARD_21
         /// <summary>
         /// Loads NLog LoggingConfiguration from appsettings.json from the NLog-section
         /// </summary>
